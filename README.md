@@ -6,7 +6,7 @@ https://ps-react-curriculum.herokuapp.com/320/9/lab/
 ### 1. Download Repo
 <mark>TODO: fill</mark>
 ```bash
-git clone {INSERT}
+git clone https://github.com/AdamFariello/RLAB_320H.9.1
 ```
 
 ### 2. Install dependencies
