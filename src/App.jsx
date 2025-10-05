@@ -14,10 +14,15 @@ function DisplayTODO() {
     </>) 
 }
 
-function listReducer(state, {type, payload: {name}}) {
-  switch (type) {
+//function listReducer(state, {type, payload: {name}}) {
+function listReducer(state, action) { //TODO: figure out why payload "wasnt" passing
+  console.log(action)
+  console.log(Object.keys(action))
+  console.log(action.payload)
+  switch (action.type) {
       case "addTask":
-        console.log(name);
+        //console.log(action.payload.name)
+        console.log(action.payload);
         break;
       default: {
         throw Error("Unknown Action: " + type);
@@ -25,8 +30,11 @@ function listReducer(state, {type, payload: {name}}) {
   }
 }
 
-function Button({children, onClick, className}) {
-  return <button onClick={onClick} className={"button " + className}>
+function Button({children, className, dispatch, type, payload}) {
+  //console.log(payload)
+  return <button 
+    onClick={() => dispatch({type: type, payload: payload })}
+    className={"button " + className}>
     {children}
   </button>
 }
@@ -36,6 +44,7 @@ function App() {
   const [task, setTask] = useState("");
   const [taskList, dispatch] = useReducer(listReducer, initTaskList)
 
+  //console.log(task);
   //console.log(taskList);
 
   return (<>
@@ -46,9 +55,13 @@ function App() {
         />
         {/*TODO: add onClick property*/}
         {/*TODO: check if you can't send a function as a property for HTML components, (unlike React)*/}
-        <button 
-          onClick={() => dispatch({type: "addTask", payload: {task} })}
+        {/* TODO: double check if you can't pass objects as a property 
+        <button onClick={() => dispatch({type: "addTask", payload: {task} })}
         >Add</button>
+        */}
+        <Button dispatch={dispatch} payload={task} type="addTask">
+          Add 
+        </Button>
       </div>
       <DisplayTODO />
   </>);
