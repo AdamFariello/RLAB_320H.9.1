@@ -17,8 +17,16 @@ function DisplayTODO() {
 function listReducer(state, {type, payload: {task}}) {
   switch (type) {
       case "addTask":
-        console.log(task);
-        break;
+        if (task) { 
+          const newTask = {
+            "userId": 1,
+            "id": initTaskList.length + 1,
+            "title": task,
+            "completed": false
+          }
+          return [...state, newTask]; 
+        }
+        return state;
       default: {
         throw Error("Unknown Action: " + type);
       }
