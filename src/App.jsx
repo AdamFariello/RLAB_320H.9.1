@@ -16,9 +16,14 @@ function DisplayTask({taskListEntry, dispatch}) {
 
         {/*TODO: add onClick property*/}
         <button>Edit</button>
-        <button onClick={() => 
-          dispatch({type:"deleteTask", payload:{task:taskListEntry, isAllow:isDelAllow}})
-        }>
+        <button 
+          onClick={() => 
+            dispatch({type:"deleteTask", payload:{task:taskListEntry, isAllow:isDelAllow}})
+          }
+          style={{
+            visibility: isDelAllow? "visible" : "hidden"
+          }}
+        >
           Delete
         </button>
       </div>
