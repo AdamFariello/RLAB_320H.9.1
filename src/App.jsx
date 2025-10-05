@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useReducer } from 'react'
 import './App.css'
 
 import initTaskList from "./todos/example.mjs"
@@ -16,22 +14,29 @@ function DisplayTODO() {
     </>) 
 }
 
-function listReducer(state, action) {
-  switch (action.type) {
-
+function listReducer(state, {type, payload: {name}}) {
+  switch (type) {
+      case "addTask":
+        console.log(name);
+        break;
       default: {
-        throw Error("Unknown Action: " + action.type);
+        throw Error("Unknown Action: " + type);
       }
   }
 }
 
+function Button({children, onClick, className}) {
+  return <button onClick={onClick} className={"button " + className}>
+    {children}
+  </button>
+}
+
 
 function App() { 
-  //console.log(initialState)
   const [task, setTask] = useState("");
-  const [taskList, dispatcher] = useReducer()
+  const [taskList, dispatch] = useReducer(listReducer, initTaskList)
 
-  //console.log(task);
+  //console.log(taskList);
 
   return (<>
       <h2>Create TODO List</h2>
@@ -40,7 +45,10 @@ function App() {
           onChange={(e) => setTask(e.target.value)}    
         />
         {/*TODO: add onClick property*/}
-        <button>Add</button>
+        {/*TODO: check if you can't send a function as a property for HTML components, (unlike React)*/}
+        <button 
+          onClick={() => dispatch({type: "addTask", payload: {task} })}
+        >Add</button>
       </div>
       <DisplayTODO />
   </>);
