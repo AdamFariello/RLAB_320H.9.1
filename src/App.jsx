@@ -5,20 +5,27 @@ import initTaskList from "./todos/example.mjs"
 
 
 function DisplayTask({taskListEntry, dispatch}) {
+    const [isDelAllow, setDelAllow] = useState(false);
     return(<>
+      {/*TODO: add conditional styling to show that delete is allowed ot not*/}
       <div style={{ width: "100%", textAlign: "center", marginBottom: "0px" }}>
-        <input type="checkbox"></input>
+        <input type="checkbox" onClick={() => setDelAllow(!isDelAllow)}>
+        </input>
         {taskListEntry.title}
+
+
         {/*TODO: add onClick property*/}
         <button>Edit</button>
-        <button onClick={() => dispatch({type:"deleteTask", payload:{task:taskListEntry}})}>
+        <button onClick={() => 
+          dispatch({type:"deleteTask", payload:{task:taskListEntry, isAllow:isDelAllow}})
+        }>
           Delete
         </button>
       </div>
     </>) 
 }
 
-function listReducer(taskList, {type, payload: {task}}) {
+function listReducer(taskList, {type, payload: {task, isAllow}}) { //TODO: get rid of payload word
   switch (type) {
       case "addTask":
         if (task) { //TODO: make it so it uses largest id # + 1 instead
@@ -32,10 +39,11 @@ function listReducer(taskList, {type, payload: {task}}) {
         }
         return taskList;
       case "deleteTask":
-          // "Takes 20 lines of assembly code to format a hard drive"
-          // "It only takes 5 to delete a file"
-          // -- spanska, 1997 
-          return taskList.filter((t) => t.id != task.id);
+          if (isAllow) {
+            return taskList.filter((t) => t.id != task.id);
+          } else {
+            return taskList;
+          }
       default: {
         throw Error("Unknown Action: " + type);
         return taskList;
