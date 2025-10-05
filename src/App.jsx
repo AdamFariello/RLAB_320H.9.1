@@ -21,8 +21,8 @@ function listReducer(state, action) { //TODO: figure out why payload "wasnt" pas
   console.log(action.payload)
   switch (action.type) {
       case "addTask":
-        //console.log(action.payload.name)
-        console.log(action.payload);
+        console.log(action.payload.task)
+        //console.log(action.payload);
         break;
       default: {
         throw Error("Unknown Action: " + type);
@@ -59,7 +59,7 @@ function App() {
         <button onClick={() => dispatch({type: "addTask", payload: {task} })}
         >Add</button>
         */}
-        <Button dispatch={dispatch} payload={task} type="addTask">
+        <Button dispatch={dispatch} payload={{task:task}} type="addTask">
           Add 
         </Button>
       </div>
