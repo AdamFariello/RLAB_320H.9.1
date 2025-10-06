@@ -3,19 +3,68 @@ import './App.css'
 
 import initTaskList from "./todos/example.mjs"
 
+{/*TODO: pass state to this funciton, and put the hook on the function below*/}
+function DisplayTaskLine({isBeingEdited, taskEntry}) {
+  const [task, setTask] = useState(taskEntry);
+
+  if (isBeingEdited) {
+    console.log("edit mode for: ", taskEntry)
+    return(<>
+      <input text="type" value={task}  
+        onChange={(e) => setTask(e.target.value)}>
+      </input>
+    </>)         
+  } else {
+    //return {taskListEntry.title}
+    return (taskEntry);
+  }
+}
 
 function DisplayTask({taskListEntry, dispatch}) {
     const [isDelAllow, setDelAllow] = useState(false);
+    const [isBeingEdited, setEdit] = useState(false);
+    
+    
+    const [task, setTask] = useState(taskListEntry.title);
+    let displayTaskLine;
+    if (isBeingEdited) {
+      displayTaskLine = <>
+        <input text="type" value={task}  
+          onChange={(e) => setTask(e.target.value)}>
+        </input>
+      </>;
+    } else {
+      displayTaskLine = task; 
+    }
+
+    
     return(<>
-      {/*TODO: add conditional styling to show that delete is allowed ot not*/}
+      {/*TODO: Make it so you can only edit one line at a time*/}
+      
       <div style={{ width: "100%", textAlign: "center", marginBottom: "0px" }}>
         <input type="checkbox" onClick={() => setDelAllow(!isDelAllow)}>
         </input>
-        {taskListEntry.title}
 
+        {/*
+        <DisplayTaskLine isBeingEdited={isBeingEdited} taskEntry={taskListEntry.title} />      
+        */}
+
+        {displayTaskLine}
 
         {/*TODO: add onClick property*/}
-        <button>Edit</button>
+        <button onClick={() => {
+          if (isBeingEdited) {
+            setEdit(!isBeingEdited);
+            if (task != taskListEntry.title) {
+              dispatch({type:"editTask", payload:{task:taskListEntry, newTask:task}});
+              //setTask(taskListEntry.title); //TODO: figure out how to re-render to make this value only reflect the value stored
+            }
+          } else {
+            setEdit(!isBeingEdited);
+          }
+        }}>
+          Edit
+        </button>
         <button 
           onClick={() => 
             dispatch({type:"deleteTask", payload:{task:taskListEntry, isAllow:isDelAllow}})
@@ -30,7 +79,7 @@ function DisplayTask({taskListEntry, dispatch}) {
     </>) 
 }
 
-function listReducer(taskList, {type, payload: {task, isAllow}}) { //TODO: get rid of payload word
+function listReducer(taskList, {type, payload: {task, isAllow, newTask}}) { //TODO: get rid of payload word
   switch (type) {
       case "addTask":
         if (task) { //TODO: make it so it uses largest id # + 1 instead
@@ -49,6 +98,13 @@ function listReducer(taskList, {type, payload: {task, isAllow}}) { //TODO: get r
           } else {
             return taskList;
           }
+      case "editTask": 
+        return taskList.map((t) => {
+          if (t.id == task.id) {
+            t.title = newTask;
+          } 
+          return t
+        });
       default: {
         throw Error("Unknown Action: " + type);
         return taskList;
@@ -70,6 +126,8 @@ function App() {
   const [task, setTask] = useState("");
   const [taskList, dispatch] = useReducer(listReducer, initTaskList)
   const [isReverse, setReverse] = useState(true); 
+
+  console.log(taskList)
 
   //TODO: add a reverse list function (lmao in what time left?) nvm
   let taskListEntries;
