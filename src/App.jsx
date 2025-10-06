@@ -153,8 +153,9 @@ function App() {
         <button onClick={() => dispatch({type: "addTask", payload: {task} })}>
           Add
         </button>
+
         <button onClick={() => setReverse(!isReverse)}>
-          Reverse
+          {isReverse ? "sort by old instead" : "sort by new instead"}
         </button>
       </div>
       <div>
